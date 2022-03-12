@@ -71,4 +71,26 @@
                 :part/data part-data}
           multipart (lib.multipart/append-part multipart part)]
       (is (malli/validate spec.multipart/multipart multipart)
-          "multipart conforms to schema"))))
+          "multipart conforms to schema")
+      (is (= part-name (get-in multipart [:multipart/parts 0 :part/name]))
+          "part name is set correctly")
+      (is (= part-data (get-in multipart [:multipart/parts 0 :part/data]))
+          "part data is set correctly")))
+
+  (testing "add with filename"
+    (let [part-name "name"
+          part-filename "foobar.png"
+          part-data "xxx"
+          multipart (lib.multipart/create)
+          part {:part/name part-name
+                :part/file-name part-filename
+                :part/data part-data}
+          multipart (lib.multipart/append-part multipart part)]
+      (is (malli/validate spec.multipart/multipart multipart)
+          "multipart conforms to schema")
+      (is (= part-name (get-in multipart [:multipart/parts 0 :part/name]))
+          "part name is set correctly")
+      (is (= part-filename (get-in multipart [:multipart/parts 0 :part/file-name]))
+          "part filename is set correctly")
+      (is (= part-data (get-in multipart [:multipart/parts 0 :part/data]))
+          "part data is set correctly"))))
